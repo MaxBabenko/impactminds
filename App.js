@@ -1,50 +1,34 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- * @lint-ignore-every XPLATJSCOPYRIGHT1
- */
+import React from 'react';
+import {
+  createSwitchNavigator,
+  createAppContainer,
+  createDrawerNavigator,
+} from 'react-navigation';
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import BootstrapScreen from './src/screens/Bootstrap';
+import AuthenticationNavigator from './src/screens/Authentication';
+import HomeScreen from './src/screens/Home/Home';
+import * as Routes from './src/routes';
+import DrawerMenu from './src/components/DrawerMenu';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
+// TODO Doesn't work when importing from Home/index
+// navigation prop in DrawerMenu failed
+const HomeNavigator = createDrawerNavigator({
+  [Routes.HOME]: {
+    screen: HomeScreen,
+  },
+}, {
+  headerMode: 'none',
+  contentComponent: ({ navigation }) => (<DrawerMenu navigation={navigation} />),
 });
 
-type Props = {};
-export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+export default createAppContainer(createSwitchNavigator(
+  {
+    [Routes.BOOTSTRAP]: BootstrapScreen,
+    [Routes.AUTHENTICATION]: AuthenticationNavigator,
+    [Routes.HOME]: HomeNavigator,
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  {
+    initialRouteName: Routes.BOOTSTRAP,
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+));
